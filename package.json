@@ -1,0 +1,38 @@
+{
+  "name": "sepia-node-js-client",
+  "version": "0.1.0",
+  "description": "Basic Node.js client and Node-RED integration for SEPIA Open Assistant",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SEPIA-Framework/sepia-node-js-client.git"
+  },
+  "keywords": [
+    "SEPIA",
+    "voice-control",
+    "text-to-speech",
+    "speech-recognition",
+    "NLU",
+    "assistant",
+    "node-red"
+  ],
+  "author": "Bytemind.de",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SEPIA-Framework/sepia-docs/issues"
+  },
+  "homepage": "https://github.com/SEPIA-Framework/sepia-node-js-client",
+  "dependencies": {
+    "node-fetch": "2.6.0"
+  },
+  "node-red": {
+    "nodes": {
+	  "config": "nodeRED/config.js",
+	  "user": "nodeRED/user.js",
+      "text-to-speech": "nodeRED/tts.js"
+    }
+  }
+}

@@ -1,0 +1,51 @@
+<!-- SEPIA Client User -->
+
+<script type="text/javascript">
+    RED.nodes.registerType('user', {
+        category: 'SEPIA',
+        color: '#fff',
+        defaults: {
+            name: { 
+				value: "" 
+			},
+			userId: {
+				value: ""
+			}, 
+			pwd: {
+				value: ""
+			},
+			userPrefLanguage: {
+				value: "en"
+			}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "icons/sepia.svg",
+        label: function() {
+            return this.name || "user";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="user">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+	<div class="form-row">
+        <label for="node-input-userId"><i class="icon-tag"></i> User ID</label>
+        <input type="text" id="node-input-userId" placeholder="uid1007">
+    </div>
+	<div class="form-row">
+        <label for="node-input-pwd"><i class="icon-tag"></i> Password</label>
+        <input type="text" id="node-input-pwd" placeholder="supersafe123">
+    </div>
+	<div class="form-row">
+        <label for="node-input-userPrefLanguage"><i class="icon-tag"></i> Default Language</label>
+        <input type="text" id="node-input-userPrefLanguage" placeholder="en/de">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="user">
+    <p>A node that represents a SEPIA user.</p>
+</script>
