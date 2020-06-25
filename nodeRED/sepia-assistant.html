@@ -1,0 +1,42 @@
+<!-- SEPIA Assistant Endpoint Interface -->
+
+<script type="text/javascript">
+    RED.nodes.registerType('sepia-assistant-request', {
+        category: 'SEPIA',
+        color: '#fff',
+        defaults: {
+            name: { 
+				value: "" 
+			},
+			defaultEndpoint: {
+				value: ""
+			}
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: "icons/sepia.svg",
+        label: function() {
+            return this.name || "sepia assistant";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="sepia-assistant-request">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+	<div class="form-row">
+        <label for="node-input-defaultEndpoint"><i class="icon-tag"></i> Default Assist-Endpoint</label>
+        <input type="text" id="node-input-defaultEndpoint">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="sepia-assistant-request">
+    <p>A node that connects to the SEPIA Assistant endpoints to do NLU, call services or respond to requests.</p>
+	<p>Input:</p>
+	<ul>
+		<li>msg.payload.input.text - <i>Text to interpret/understand/answer etc.</i></li>
+		<li>msg.payload.endpoint - <i>Optional. Call specific assist-endpoint: interpret/understand/interview/answer.</i></li>
+	</ul>
+</script>
