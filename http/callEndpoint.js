@@ -21,6 +21,21 @@ const endpointConfigs = {
 		method: postJson,
 		skipCredentials: true	//its in "data" for this one
 	},
+	"interpret": {
+		method: postForm
+	},
+	"understand": {
+		method: postForm
+	},
+	"interview": {
+		method: postForm
+	},
+	"answer": {
+		method: postForm
+	},
+	"remote-action": {
+		method: postForm
+	},
 	"tts": {
 		method: postForm
 	},
@@ -52,8 +67,11 @@ function callEndpoint(config, user, serverNameOrUrl, endpoint, data){
 	}
 	if (!conf.skipCredentials){
 		var authData = user.getAuthJson();
-		if (!authData) return Promise.reject(new Error('missing authentication data'));
-		data = Object.assign(authData, data);
+		if (!authData){
+			return Promise.reject(new Error('missing authentication data'));
+		}else{
+			data = Object.assign(authData, data);
+		}
 	}
 	
 	log("callEndpoint url", url);				//DEBUG

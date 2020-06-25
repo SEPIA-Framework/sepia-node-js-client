@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const callSepiaEndpoint = require('./callEndpoint');
+const callSepiaEndpoint = require('../http/callEndpoint');
 
 function User(clientConfig, userId, pwd){
 	this.userId = userId;

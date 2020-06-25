@@ -1,29 +1,7 @@
 module.exports = function(RED){
 	
-	const { Tts } = require('../http/tts');
-
-	function sendJsonOrError(node, resultJsonPromise){
-		resultJsonPromise.then(function(json){
-			if (!json || json.result == "fail"){
-				//error - output 2
-				node.error("SEPIA TTS - request failed");
-				node.send([
-					null, {	payload: { error: json } }
-				]);
-			}else{
-				//result - output 1
-				node.send([
-					{ payload: json	}, null
-				]);
-			}
-		}).catch(function(err){
-			//error - output 2
-			node.error("SEPIA TTS - request failed");
-			node.send([
-				null, {	payload: { error: err } }
-			]);
-		});
-	}
+	const { Tts } = require('../abilities/tts');
+	const { sendJsonOrError } = require('./common');
 	
 	function TextToSpeechInfo(config){
 		RED.nodes.createNode(this, config);
@@ -66,6 +44,8 @@ module.exports = function(RED){
 		
 		var sepiaClientConfig;
 		var sepiaUser;
+		
+		node.status({ fill: "yellow", shape: "dot", text: "add user" });
 		
         node.on('input', function(msg){
 			//node.log("tts-get-audio msg: " + JSON.stringify(msg));
