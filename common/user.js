@@ -1,31 +1,94 @@
 const crypto = require('crypto');
+const callSepiaEndpoint = require('./callEndpoint');
 
-function User(userId, pwd, prefLanguageCode){
+function User(clientConfig, userId, pwd){
 	this.userId = userId;
+	var token;
+	var tokenTS;
+	var email;
+	var name;
+	var roles;
+	var accessLevel;
+	var prefLanguageCode;
+	var isAuthenticated = false;
+	
 	if (pwd.length < 60){
-		this.token = getSHA256(pwd);	//note: hashed clear-text! Trade this for "real" token.
+		token = getSHA256(pwd);	//note: hashed clear-text! Trade this for "real" token.
 	}else{
-		this.token = pwd;
+		token = pwd;
 	}
-	this.lang = prefLanguageCode;
 	
 	var thisUser = this;
 		
 	this.getKey = function(){
-		return (thisUser.userId + ";" + thisUser.token);
+		if (isAuthenticated){
+			return (thisUser.userId + ";" + token);
+		}else{
+			return;
+		}
 	}
 	this.setToken = function(newToken){
-		thisUser.token = newToken;
+		token = newToken;
 	}
-	
 	this.getAuthJson = function(){
-		return {
-			KEY: thisUser.getKey()
+		if (isAuthenticated){
+			return {
+				KEY: thisUser.getKey()
+			}
+		}else{
+			return;
 		}
 	}
 	
+	this.authenticate = function(successCallback, errorCallback){
+		var resultJsonPromise = callSepiaEndpoint(clientConfig, undefined, "assist", "authentication", {
+			action: "validate",
+			KEY: (thisUser.userId + ";" + token)
+		});
+		return resultJsonPromise.then(function(json){
+			if (json && json.keyToken){
+				//success
+				token = json.keyToken;
+				tokenTS = json.keyToken_TS;
+				email = json.email;
+				roles = json.user_roles;
+				name = json.user_name;
+				accessLevel = json.access_level;
+				prefLanguageCode = json.user_lang_code;
+				isAuthenticated = true;
+				if (successCallback) successCallback({
+					userId: userId,
+					accessLevel: accessLevel,
+					name: name,
+					roles: roles,
+					email: email,
+					prefLanguageCode: prefLanguageCode
+				});
+			}else{
+				//error
+				if (errorCallback) errorCallback(json);
+			}
+		}).catch(function(err){
+			//error
+			if (errorCallback) errorCallback(err);
+		});
+	}
+	
+	this.isAuthenticated = function(){
+		return isAuthenticated;
+	}
+	
 	this.getLanguage = function(){
-		return thisUser.lang;
+		return prefLanguageCode;
+	}
+	this.getName = function(){
+		return name;
+	}
+	this.getRoles = function(){
+		return roles;
+	}
+	this.getEmail = function(){
+		return email;
 	}
 }
 
