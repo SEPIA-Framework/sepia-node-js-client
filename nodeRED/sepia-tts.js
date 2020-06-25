@@ -29,7 +29,7 @@ module.exports = function(RED){
 		RED.nodes.createNode(this, config);
         var node = this;
 		
-		var sepiaConfig;
+		var sepiaClientConfig;
 		var sepiaUser;
 		
 		node.on('input', function(msg){
@@ -37,24 +37,24 @@ module.exports = function(RED){
 			
 			//requirements
 			if (msg.payload && typeof msg.payload == "object"){
-				if (msg.payload.sepiaConfig) sepiaConfig = msg.payload.sepiaConfig;
+				if (msg.payload.sepiaClientConfig) sepiaClientConfig = msg.payload.sepiaClientConfig;
 				if (msg.payload.sepiaUser) sepiaUser = msg.payload.sepiaUser;
 				
-				if (sepiaConfig && sepiaUser){
+				if (sepiaClientConfig && sepiaUser){
 					node.status({ fill: "green", shape: "dot", text: "ready" });
 				}else{
-					node.status({ fill: "red", shape: "ring", text: "incomplete"});
+					node.status({ fill: "red", shape: "dot", text: "incomplete"});
 				}
 			
 			//request
 			}else{
-				if (sepiaConfig && sepiaUser){
+				if (sepiaClientConfig && sepiaUser){
 					node.log("SEPIA TTS - info request sent");
-					var resultJsonPromise = new Tts(sepiaConfig, sepiaUser).getInfo();
+					var resultJsonPromise = new Tts(sepiaClientConfig, sepiaUser).getInfo();
 					sendJsonOrError(node, resultJsonPromise);
 				}else{
 					node.warn("SEPIA TTS - Node was missing 'config' or 'user'.");
-					node.status({ fill: "red", shape: "ring", text: "incomplete"});
+					node.status({ fill: "red", shape: "dot", text: "incomplete"});
 				}
 			}
 		});
@@ -64,19 +64,19 @@ module.exports = function(RED){
         RED.nodes.createNode(this,config);
         var node = this;
 		
-		var sepiaConfig;
+		var sepiaClientConfig;
 		var sepiaUser;
 		
         node.on('input', function(msg){
-			node.log("tts-get-audio msg: " + JSON.stringify(msg));
+			//node.log("tts-get-audio msg: " + JSON.stringify(msg));
 			
 			//requirements
 			var ttsData;
 			if (msg.payload){
-				if (msg.payload.sepiaConfig) sepiaConfig = msg.payload.sepiaConfig;
+				if (msg.payload.sepiaClientConfig) sepiaClientConfig = msg.payload.sepiaClientConfig;
 				if (msg.payload.sepiaUser) sepiaUser = msg.payload.sepiaUser;
 				
-				if (sepiaConfig && sepiaUser){
+				if (sepiaClientConfig && sepiaUser){
 					node.status({ fill: "green", shape: "dot", text: "ready" });
 				}else{
 					node.status({ fill: "red", shape: "ring", text: "incomplete"});
@@ -90,10 +90,10 @@ module.exports = function(RED){
 			}
 			
 			//request
-			if (sepiaConfig && sepiaUser){
+			if (sepiaClientConfig && sepiaUser){
 				if (ttsData && ttsData.text){
 					node.log("SEPIA TTS - audio request sent");
-					var resultJsonPromise = new Tts(sepiaConfig, sepiaUser).getAudio({
+					var resultJsonPromise = new Tts(sepiaClientConfig, sepiaUser).getAudio({
 						text: ttsData.text,
 						lang: ttsData.lang,
 						voice: ttsData.voice,
@@ -109,6 +109,6 @@ module.exports = function(RED){
         });
     }
 	
-    RED.nodes.registerType("tts-get-info", TextToSpeechInfo);
-	RED.nodes.registerType("tts-get-audio", TextToSpeechAudioUrl);
+    RED.nodes.registerType("sepia-tts-get-info", TextToSpeechInfo);
+	RED.nodes.registerType("sepia-tts-get-audio", TextToSpeechAudioUrl);
 }

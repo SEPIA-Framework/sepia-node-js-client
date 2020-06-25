@@ -30,9 +30,9 @@
   },
   "node-red": {
     "nodes": {
-	  "config": "nodeRED/config.js",
-	  "user": "nodeRED/user.js",
-      "text-to-speech": "nodeRED/tts.js"
+	  "sepia-client-config": "nodeRED/sepia-client-config.js",
+	  "sepia-user": "nodeRED/sepia-user.js",
+      "sepia-text-to-speech": "nodeRED/sepia-tts.js"
     }
   }
 }

@@ -1,0 +1,61 @@
+<!-- SEPIA Client Config -->
+
+<script type="text/javascript">
+    RED.nodes.registerType('sepia-client-config', {
+        category: 'config',
+        defaults: {
+            name: { 
+				value: "" 
+			},
+			serverHost: {
+				value: "localhost"
+			}, 
+			deviceId: {
+				value: "n1"
+			},
+			appLanguage: {
+				value: "en"
+			},
+			environment: {
+				value: "default"
+			},
+			clientInfo: {
+				value: "node_red"
+			}
+        },
+        label: function() {
+            return this.name || "sepia client";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="sepia-client-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+	<div class="form-row">
+        <label for="node-config-input-serverHost"><i class="icon-tag"></i> SEPIA Server Host</label>
+        <input type="text" id="node-config-input-serverHost" placeholder="hostname/IP/proxy path">
+    </div>
+	<div class="form-row">
+        <label for="node-config-input-deviceId"><i class="icon-tag"></i> Client Device ID</label>
+        <input type="text" id="node-config-input-deviceId" placeholder="n1">
+    </div>
+	<div class="form-row">
+        <label for="node-config-input-appLanguage"><i class="icon-tag"></i> Default Language</label>
+        <input type="text" id="node-config-input-appLanguage" placeholder="en/de">
+    </div>
+	<div class="form-row">
+        <label for="node-config-input-environment"><i class="icon-tag"></i> Client Environment</label>
+        <input type="text" id="node-config-input-environment" placeholder="default">
+    </div>
+	<div class="form-row">
+        <label for="node-config-input-clientInfo"><i class="icon-tag"></i> Client Tag</label>
+        <input type="text" id="node-config-input-clientInfo" placeholder="node_red">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="sepia-client-config">
+    <p>Client configuration for a SEPIA connection.</p>
+</script>
