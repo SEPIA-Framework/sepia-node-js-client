@@ -10,6 +10,9 @@
 			},
 			defaultEndpoint: {
 				value: ""
+			},
+			useOriginalResult: {
+				value: "false"
 			}
         },
         inputs: 1,
@@ -28,7 +31,11 @@
     </div>
 	<div class="form-row">
         <label for="node-input-defaultEndpoint"><i class="icon-tag"></i> Default Assist-Endpoint</label>
-        <input type="text" id="node-input-defaultEndpoint">
+        <input type="text" id="node-input-defaultEndpoint" placeholder="answer, interview, understand, interpret">
+    </div>
+	<div class="form-row">
+        <label for="node-input-useOriginalResult"><i class="icon-tag"></i> Output raw result</label>
+        <input type="text" id="node-input-useOriginalResult" placeholder="false, true">
     </div>
 </script>
 
