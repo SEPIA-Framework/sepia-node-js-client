@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const AbortController = require("abort-controller")
 const { URLSearchParams } = require('url');
 
 //Endpoint configurations
@@ -15,7 +16,8 @@ const endpointConfigs = {
 	"ping": {
 		method: getJson,
 		skipCredentials: true,
-		skipClientInfo: true
+		skipClientInfo: true,
+		timeoutMs: 3000
 	},
 	"authentication": {
 		method: postJson,
@@ -43,6 +45,7 @@ const endpointConfigs = {
 		method: postForm
 	}
 }
+const defaultTimeoutMs = 10000;		//nothing in SEPIA should take longer!
 
 function log(msg, data){
 	//console.log("LOG - " + msg, data);
@@ -53,6 +56,7 @@ function callEndpoint(config, user, serverNameOrUrl, endpoint, data){
 	var conf = (!endpoint)? endpointConfigs["GET-PLAIN"] : (endpointConfigs[endpoint] || endpointConfigs["default"]);
 	var httpReq = conf.method;
 	var headers = conf.headers || {};
+	var timeoutMs = conf.timeoutMs || defaultTimeoutMs;
 	
 	//get correct server
 	var url = config.getServer(serverNameOrUrl);
@@ -78,28 +82,76 @@ function callEndpoint(config, user, serverNameOrUrl, endpoint, data){
 	log("callEndpoint data", data);				//DEBUG
 	log("callEndpoint headers", headers);		//DEBUG
 	
-	var resProm = httpReq(url, data, headers);
+	var resProm = httpReq(url, data, headers, timeoutMs);
 	if (!conf.responseType || conf.responseType == "json"){
-		return resProm.then(res => res.json());
+		return resProm
+			.then(res => {
+				if (resProm.reqTimeout){
+					clearTimeout(resProm.reqTimeout);
+					delete resProm.reqTimeout;
+				}
+				return res.json();
+			})
+			.catch(err => {
+				if (resProm.reqTimeout){
+					clearTimeout(resProm.reqTimeout);
+					delete resProm.reqTimeout;
+				}
+				//return Promise.reject(err);
+				if (err.name === 'AbortError'){
+					throw new Error("request to " + url + " failed, reason: could not establish connection before timeout");
+				}else{
+					throw new Error(err.message);
+				}
+			});
 	}else if (conf.responseType == "text"){
-		return resProm.then(res => res.text());
+		return resProm
+			.then(res => {
+				if (resProm.reqTimeout){
+					clearTimeout(resProm.reqTimeout);
+					delete resProm.reqTimeout;
+				}
+				return res.text();
+			})
+			.catch(err => {
+				if (resProm.reqTimeout){
+					clearTimeout(resProm.reqTimeout);
+					delete resProm.reqTimeout;
+				}
+				if (err.name === 'AbortError'){
+					throw new Error("request to " + url + " failed, reason: could not establish connection before timeout");
+				}else{
+					throw new Error(err.message);
+				}
+			});
 	}
 }
-function postJson(url, data, headers){
+function postJson(url, data, headers, timeoutMs){
+	const controller = new AbortController();
+	const timeout = setTimeout(() => { controller.abort(); }, timeoutMs || defaultTimeoutMs);
+	
 	headers['Content-Type'] = 'application/json';
+	
 	var body = {};
 	if (data){
 		body = JSON.stringify(data);
 		log("postJson body", body);				//DEBUG
 	}
-	return fetch(url, {
+	var f = fetch(url, {
         method: 'POST',
         body:    body,
-        headers: headers
+        headers: headers,
+		signal: controller.signal
     });
+	f.reqTimeout = timeout;
+	return f;
 }
-function postForm(url, data, headers){
+function postForm(url, data, headers, timeoutMs){
+	const controller = new AbortController();
+	const timeout = setTimeout(() => { controller.abort(); }, timeoutMs || defaultTimeoutMs);
+	
 	headers['Content-Type'] = 'application/x-www-form-urlencoded';
+	
 	const params = new URLSearchParams();
 	if (data){
 		Object.keys(data).forEach(function(key){
@@ -107,25 +159,42 @@ function postForm(url, data, headers){
 		});
 	}
 	log("postForm params", params);				//DEBUG
-	return fetch(url, { 
+	var f = fetch(url, { 
 		method: 'POST', 
 		body: 	 params,
-		headers: headers
+		headers: headers,
+		signal: controller.signal
 	});
+	f.reqTimeout = timeout;
+	return f;
 }
-function getPlain(url, data, headers){
+function getPlain(url, data, headers, timeoutMs){
+	const controller = new AbortController();
+	const timeout = setTimeout(() => { controller.abort(); }, timeoutMs || defaultTimeoutMs);
+	
 	headers['Accept'] = 'text/plain';
-	return fetch(url, { 
+	
+	var f = fetch(url, { 
 		method: 'GET',
-		headers: headers
+		headers: headers,
+		signal: controller.signal
 	});
+	f.reqTimeout = timeout;
+	return f;
 }
-function getJson(url, data, headers){
+function getJson(url, data, headers, timeoutMs){
+	const controller = new AbortController();
+	const timeout = setTimeout(() => { controller.abort(); }, timeoutMs || defaultTimeoutMs);
+	
 	headers['Accept'] = 'application/json';
-	return fetch(url, { 
+	
+	var f = fetch(url, { 
 		method: 'GET',
-		headers: headers
+		headers: headers,
+		signal: controller.signal
 	});
+	f.reqTimeout = timeout;
+	return f;
 }
 
 //---EXPORTS:

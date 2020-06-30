@@ -11,8 +11,6 @@ module.exports = function(RED){
 		var sepiaUser;
 		
 		node.on('input', function(msg){
-			//node.log("tts-get-info msg.payload: " + JSON.stringify(msg.payload));
-			
 			//requirements
 			if (msg.payload && typeof msg.payload == "object"){
 				if (msg.payload.sepiaClientConfig) sepiaClientConfig = msg.payload.sepiaClientConfig;
@@ -48,8 +46,6 @@ module.exports = function(RED){
 		node.status({ fill: "yellow", shape: "dot", text: "add user" });
 		
         node.on('input', function(msg){
-			//node.log("tts-get-audio msg: " + JSON.stringify(msg));
-			
 			//requirements
 			var ttsData;
 			if (msg.payload){
