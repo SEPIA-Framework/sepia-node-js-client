@@ -7,8 +7,9 @@ function RemoteAction(config, user){
 			return Promise.reject(new Error("missing 'key'"));
 		}
 		if (!data) data = {};
-		var action = {};
-		action.key = key;
+		var action = {
+			key: action.key
+		};
 		if (data.language){
 			action.language = data.language;
 		}

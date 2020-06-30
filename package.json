@@ -1,6 +1,6 @@
 {
   "name": "sepia-node-js-client",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Basic Node.js client and Node-RED integration for SEPIA Open Assistant",
   "main": "test.js",
   "scripts": {
@@ -26,14 +26,17 @@
   },
   "homepage": "https://github.com/SEPIA-Framework/sepia-node-js-client",
   "dependencies": {
-    "node-fetch": "2.6.0"
+    "node-fetch": "~2.6.0",
+    "abort-controller": "~3.0.0"
   },
   "node-red": {
     "nodes": {
-	  "sepia-client-config": "nodeRED/sepia-client-config.js",
-	  "sepia-user": "nodeRED/sepia-user.js",
-	  "sepia-assistant": "nodeRED/sepia-assistant.js",
-      "sepia-text-to-speech": "nodeRED/sepia-tts.js"
+      "sepia-client-config": "nodeRED/sepia-client-config.js",
+      "sepia-user": "nodeRED/sepia-user.js",
+	  "sepia-ping": "nodeRED/sepia-ping.js",
+      "sepia-assistant": "nodeRED/sepia-assistant.js",
+      "sepia-text-to-speech": "nodeRED/sepia-tts.js",
+	  "sepia-remote-action": "nodeRED/sepia-remote-action.js"
     }
   }
 }

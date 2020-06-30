@@ -1,5 +1,6 @@
 const { Config } = require('./common/config');
 const { User } = require('./common/user');
+const { PingServer } = require('./http/pingServer');
 const { Assistant } = require('./abilities/assistant');
 const { RemoteAction } = require('./abilities/remote-action');
 const { Tts } = require('./abilities/tts');
@@ -19,27 +20,11 @@ var user = new User(conf, "uid1007", "test12345");
 
 (async function(){
 	//Ping server
-	var pingRes;
 	var reachedAssistServer;
-	
-	try {
-		pingRes = await callSepiaEndpoint(conf, undefined, "assist", "ping");
-		console.log("LOG - Ping Assist-Server:", pingRes);
+	var pingRes = await new PingServer(conf).getSepiaHomeStatus();
+	console.log("LOG - Server Ping Result:", pingRes);
+	if (pingRes && pingRes.result && pingRes.result == "success"){
 		reachedAssistServer = true;
-	}catch (err){
-		console.error("ERROR - Assist Ping:", err);
-	}
-	try {
-		pingRes = await callSepiaEndpoint(conf, undefined, "teach", "ping");
-		console.log("LOG - Ping Teach-Server:", pingRes);
-	}catch (err){
-		console.error("ERROR - Teach Ping:", err);
-	}
-	try {
-		pingRes = await callSepiaEndpoint(conf, undefined, "chat", "ping");
-		console.log("LOG - Ping Chat-Server:", pingRes);
-	}catch (err){
-		console.error("ERROR - Chat Ping:", err);
 	}
 	
 	if (!reachedAssistServer){

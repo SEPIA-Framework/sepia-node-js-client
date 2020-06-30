@@ -1,0 +1,47 @@
+<!-- SEPIA Remote Action -->
+
+<script type="text/javascript">
+    RED.nodes.registerType('sepia-remote-action', {
+        category: 'SEPIA',
+        color: '#fff',
+        defaults: {
+            name: { 
+				value: "" 
+			}
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: "icons/sepia.svg",
+        label: function() {
+            return this.name || "sepia remote action";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="sepia-remote-action">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+	<div class="form-row">
+        <label for="node-input-sepiaClientConfig"><i class="icon-tag"></i> SEPIA Client</label>
+        <input type="text" id="node-input-sepiaClientConfig">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="sepia-remote-action">
+    <p>A node that sends a remote-action requests to a SEPIA client via the SEPIA-Home server.</p>
+	<p>Input:</p>
+	<ul>
+		<li>msg.payload.action.type - <i>Type of remote action, e.g.: 'hotkey'</i></li>
+		<li>msg.payload.action.data.key - <i>For type 'hotkey': key to trigger, e.g. 'mic', 'back' or 'ao' (always-on mode)</i></li>
+		<li>msg.payload.action.data.language - <i>(Optional) Language code</i></li>
+		<li>msg.payload.action.data.deviceId - <i>(Optional) Target device</i></li>
+		<li>msg.payload.action.data.channelId - <i>(Optional) Target channel</i></li>
+	</ul>
+	<p>Output:</p>
+	<ul>
+		<li>1 - <i>Success</i></li>
+		<li>2 - <i>Error</i></li>
+	</ul>
+</script>
