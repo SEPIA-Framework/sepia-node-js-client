@@ -26,17 +26,19 @@
   },
   "homepage": "https://github.com/SEPIA-Framework/sepia-node-js-client",
   "dependencies": {
+    "abort-controller": "~3.0.0",
     "node-fetch": "~2.6.0",
-    "abort-controller": "~3.0.0"
+	"isomorphic-ws": "~4.0.1",
+    "ws": "~7.3.0"
   },
   "node-red": {
     "nodes": {
       "sepia-client-config": "nodeRED/sepia-client-config.js",
       "sepia-user": "nodeRED/sepia-user.js",
-	  "sepia-ping": "nodeRED/sepia-ping.js",
+      "sepia-ping": "nodeRED/sepia-ping.js",
       "sepia-assistant": "nodeRED/sepia-assistant.js",
       "sepia-text-to-speech": "nodeRED/sepia-tts.js",
-	  "sepia-remote-action": "nodeRED/sepia-remote-action.js"
+      "sepia-remote-action": "nodeRED/sepia-remote-action.js"
     }
   }
 }
