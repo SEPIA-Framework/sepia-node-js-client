@@ -33,8 +33,9 @@
     <p>A node that sends a remote-action requests to a SEPIA client via the SEPIA-Home server.</p>
 	<p>Input:</p>
 	<ul>
-		<li>msg.payload.action.type - <i>Type of remote action, e.g.: 'hotkey'</i></li>
+		<li>msg.payload.action.type - <i>Type of remote action, e.g.: 'hotkey' or 'sync'</i></li>
 		<li>msg.payload.action.data.key - <i>For type 'hotkey': key to trigger, e.g. 'mic', 'back' or 'ao' (always-on mode)</i></li>
+		<li>msg.payload.action.data.events - <i>For type 'sync': events to sync., e.g. 'timer' or 'alarm'</i></li>
 		<li>msg.payload.action.data.language - <i>(Optional) Language code</i></li>
 		<li>msg.payload.action.data.deviceId - <i>(Optional) Target device</i></li>
 		<li>msg.payload.action.data.channelId - <i>(Optional) Target channel</i></li>

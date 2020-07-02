@@ -39,14 +39,31 @@ module.exports = function(RED){
 						node.log("SEPIA Remote-Action - 'hotkey' action sent");
 						var data = {
 							language: (actionData.data.language || ""),
-							channelId: (actionData.data.channelId || ""),
-							deviceId: (actionData.data.deviceId || "")
+							targetChannelId: (actionData.data.channelId || ""),
+							targetDeviceId: (actionData.data.deviceId || "")
 						}
 						var resultJsonPromise = new RemoteAction(sepiaClientConfig, sepiaUser)
 							.triggerKey(actionData.data.key, data);
 						sendJsonOrError(node, resultJsonPromise);
+						
+					}else if (actionData.data && actionData.type == "sync"){
+						node.log("SEPIA Remote-Action - 'sync' action sent");
+						var data = {
+							targetChannelId: (actionData.data.channelId || ""),
+							targetDeviceId: (actionData.data.deviceId || "")
+						}
+						var resultJsonPromise = new RemoteAction(sepiaClientConfig, sepiaUser)
+							.triggerSync(actionData.data.events, data);
+						sendJsonOrError(node, resultJsonPromise);
+					
+					}else if (actionData.action && actionData.type){
+						node.log("SEPIA Remote-Action - sending '" + actionData.type + "' action");
+						var resultJsonPromise = new RemoteAction(sepiaClientConfig, sepiaUser)
+							.sendAction(actionData.type, actionData.action, actionData.data);
+						sendJsonOrError(node, resultJsonPromise);
+						
 					}else{
-						node.warn("SEPIA Remote-Action - Unknown action type or missing data.");
+						node.warn("SEPIA Remote-Action - Invalid request. Missing type, action or data.");
 						node.status({ fill: "red", shape: "ring", text: "invalid request"});
 					}
 				}

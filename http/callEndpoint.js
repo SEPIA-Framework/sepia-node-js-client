@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const AbortController = require("abort-controller")
+const AbortController = require("abort-controller");
 const { URLSearchParams } = require('url');
 
 //Endpoint configurations
@@ -17,7 +17,7 @@ const endpointConfigs = {
 		method: getJson,
 		skipCredentials: true,
 		skipClientInfo: true,
-		timeoutMs: 3000
+		timeoutMs: 4000
 	},
 	"authentication": {
 		method: postJson,
@@ -83,48 +83,29 @@ function callEndpoint(config, user, serverNameOrUrl, endpoint, data){
 	log("callEndpoint headers", headers);		//DEBUG
 	
 	var resProm = httpReq(url, data, headers, timeoutMs);
-	if (!conf.responseType || conf.responseType == "json"){
-		return resProm
-			.then(res => {
-				if (resProm.reqTimeout){
-					clearTimeout(resProm.reqTimeout);
-					delete resProm.reqTimeout;
-				}
-				return res.json();
-			})
-			.catch(err => {
-				if (resProm.reqTimeout){
-					clearTimeout(resProm.reqTimeout);
-					delete resProm.reqTimeout;
-				}
-				//return Promise.reject(err);
-				if (err.name === 'AbortError'){
-					throw new Error("request to " + url + " failed, reason: could not establish connection before timeout");
-				}else{
-					throw new Error(err.message);
-				}
-			});
-	}else if (conf.responseType == "text"){
-		return resProm
-			.then(res => {
-				if (resProm.reqTimeout){
-					clearTimeout(resProm.reqTimeout);
-					delete resProm.reqTimeout;
-				}
-				return res.text();
-			})
-			.catch(err => {
-				if (resProm.reqTimeout){
-					clearTimeout(resProm.reqTimeout);
-					delete resProm.reqTimeout;
-				}
-				if (err.name === 'AbortError'){
-					throw new Error("request to " + url + " failed, reason: could not establish connection before timeout");
-				}else{
-					throw new Error(err.message);
-				}
-			});
-	}
+	return resProm.then(res => {
+		if (resProm.reqTimeout){
+			clearTimeout(resProm.reqTimeout);
+			delete resProm.reqTimeout;
+		}
+		if (conf.responseType && conf.responseType == "text"){
+			return res.text();
+		}else{
+			return res.json();
+		}
+	})
+	.catch(err => {
+		if (resProm.reqTimeout){
+			clearTimeout(resProm.reqTimeout);
+			delete resProm.reqTimeout;
+		}
+		//return Promise.reject(err);
+		if (err.name === 'AbortError'){
+			throw new Error("request to " + url + " failed, reason: could not establish connection before timeout");
+		}else{
+			throw new Error(err.message);
+		}
+	});
 }
 function postJson(url, data, headers, timeoutMs){
 	const controller = new AbortController();
