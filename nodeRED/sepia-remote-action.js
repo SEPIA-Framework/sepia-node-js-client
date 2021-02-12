@@ -35,7 +35,8 @@ module.exports = function(RED){
 			//request
 			if (sepiaClientConfig && sepiaUser){
 				if (actionData){
-					if (actionData.data && actionData.type == "hotkey"){
+					//TODO: these shortcuts are a bit confusing compared to '.sendAction' ...
+					if (actionData.data && actionData.data.key && actionData.type == "hotkey"){
 						node.log("SEPIA Remote-Action - 'hotkey' action sent");
 						var data = {
 							language: (actionData.data.language || ""),
@@ -46,7 +47,7 @@ module.exports = function(RED){
 							.triggerKey(actionData.data.key, data);
 						sendJsonOrError(node, resultJsonPromise);
 						
-					}else if (actionData.data && actionData.type == "sync"){
+					}else if (actionData.data && actionData.data.events && actionData.type == "sync"){
 						node.log("SEPIA Remote-Action - 'sync' action sent");
 						var data = {
 							targetChannelId: (actionData.data.channelId || ""),
@@ -56,6 +57,7 @@ module.exports = function(RED){
 							.triggerSync(actionData.data.events, data);
 						sendJsonOrError(node, resultJsonPromise);
 					
+					//TODO: ... this is kind of the correct common way (but: msg.payload.action.action ... :-/)
 					}else if (actionData.action && actionData.type){
 						node.log("SEPIA Remote-Action - sending '" + actionData.type + "' action");
 						var resultJsonPromise = new RemoteAction(sepiaClientConfig, sepiaUser)
@@ -63,7 +65,7 @@ module.exports = function(RED){
 						sendJsonOrError(node, resultJsonPromise);
 						
 					}else{
-						node.warn("SEPIA Remote-Action - Invalid request. Missing type, action or data.");
+						node.warn("SEPIA Remote-Action - Missing or invalid type, action or data.");
 						node.status({ fill: "red", shape: "ring", text: "invalid request"});
 					}
 				}
